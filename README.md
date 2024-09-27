@@ -1,0 +1,2 @@
+# terraform-AWS
+Raisetech第5回課題にて作成したAWSリソースをterraformで作成
