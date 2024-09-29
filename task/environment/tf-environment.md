@@ -2,6 +2,8 @@
 1. [AWSCLIをインストールし、terraformの操作をできるようにする](https://github.com/tushiko23/CLI-AWS/blob/modify/cLI-command/cli-install.md)
 2. `tfenv`を使用して、Terraformをインストール
 
+* 今回は、手順2を実行します。
+
 ## LocalPCにterraformをインストール
 
 インストール方法さまざまありますが、今回は、バージョン管理容易なtfenvを用いてインストールします。
