@@ -607,7 +607,6 @@ Destroy complete! Resources: 1 destroyed.
 #### 1. 
 #### 2.`git.ignore`をインストールして、`tf.state`ファイル及び`backup`に記録されたセキュリティ情報(SSH接続するキーペアの情報・RDSのログインパスワードなど)が誤ってPublic リポジトリにPushされないようにする
 
-
 ### 作成するリソースの説明
 ###  それぞれの記述方法
 #### 1. Terraformの変数なし
