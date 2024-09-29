@@ -5,7 +5,7 @@
 
 #### 以下の構成図に基づいて、terraformリソースを作成します。
 
-![](terraform-task/images/tf-1.png)
+![](task/images/tf-1.png)
 
 ## 前準備
 
@@ -17,8 +17,8 @@
 * [AWS CLIのインストール方法・認証情報の登録方法はこちら](https://github.com/tushiko23/CLI-AWS/blob/modify/cLI-command/cli-install.md)
 
 ####  3. LocalPCにTerraformをインストール(今回は`tfenv`を使用してインストール)
-* [`tfenv`でのインストール手順はこちら](terraform-task/terraform-environment/tf-environment.md)
-* [`wget`と`unzip`をインストールして、Terraformを使用する方法はこちら](terraform-task/terraform-environment/tf-wzip-install.md) 
+* [`tfenv`でのインストール手順はこちら](task/environment/tf-environment.md)
+* [`wget`と`unzip`をインストールして、Terraformを使用する方法はこちら](task/environment/tf-wzip-install.md) 
 
    <def>(今回は`tfenv`を用いてTerraformを使用するので、参考までに載せておきます)
 ####  4. `tree`コマンドのインストール(任意です、あると構成がわかるので便利)
@@ -33,6 +33,8 @@ AWSのリソースを作成できるように、Provider.tfにProviderを定義�
 
 TerraformのAWSにおけるProviderとは
 * TerraformがAWSのリソースを管理・操作できるようにするためのインターフェース。具体的には、プロバイダーはAWSのAPIとTerraformの間の橋渡し役を果たす。Terraformを使ってAWSのインフラをコードで定義し、リソースを作成、更新、削除することができる。
+
+<details><summary>実行して表示されるコードブロック</summary>
 
 ```
 # provider.tfに記述
@@ -59,6 +61,7 @@ provider "aws" {
   # secret_key = "my-secret-key"
 }
 ```
+</details>
 
 
 * [Cloud9のAMTCについてはこちら](https://dev.classmethod.jp/articles/aws-cloud9-aws-managed-temporary-credentials/)
@@ -73,6 +76,8 @@ provider "aws" {
 * providerの変更・追加、modulesの変更・追加など、init後に前提条件を変更した際には再実行が必要。
 
 実行すると、
+<details><summary>実行して表示されるコードブロック</summary>
+
 ```
 $ terraform init
 
@@ -91,21 +96,28 @@ If you ever set or change modules or backend configuration for Terraform,
 rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 ```
+</details>
 
 ***Terraform has been successfully initialized!*** が表示されると、成功！
 
 #### 2. `terraform fmt`コマンド
 * fmt=コード整形 Terraformはコード整形するのがスタンダードとなっていて、記述したファイルの=の位置等を揃える役割。
 * コードを書いたら、実行するのが一般的。揃っていない場合は揃えたファイルが表示され、揃えるファイルがない場合は何も表示されない。
+
+<details><summary>実行して表示されるコードブロック</summary>
+
 ```
 # provider.tfのコード整形
 $ terraform fmt
 provider.tf
 ```
+</details>
 
 #### 3. `terraform validate`コマンド
 * validate=構文チェック Terraformにはバリデーション（記述が正しいかのチェック）機能もある。
 * 成功すると、***Success! The configuration is valid.*** が表示され、エラーがあると、エラー箇所が表示される。
+
+<details><summary>実行して表示されるコードブロック</summary>
 
 ```
 # 成功の場合
@@ -123,6 +135,8 @@ $ terraform validate
 │ 
 │ A managed resource "aws_vpc" "main_vpc" has not been declared in the root module.
 ```
+</details>
+
 #### 4. `terraform plan`コマンド
 * plan=ドライラン いきなり構築を開始するのではなく、これからどのような処理が始まるか、事前に目視確認ができる。
 * ***+が追加(add)***、***~が更新(change)***、***-が削除(destroy)*** になる。
@@ -133,6 +147,8 @@ $ terraform validate
 `apply`の失敗もある。(逆もある。`plan`では失敗するが、`apply`で成功する)
 
 VPCを作成するコードを記述して`terraform plan`を実行する場合、以下が表示される。
+
+<details><summary>実行して表示されるコードブロック</summary>
 
 ```
 $ terraform plan
@@ -162,6 +178,7 @@ $ terraform plan
 }
 Plan: 1 to add, 0 to change, 0 to destroy.
 ```
+</details>
 
 #### 5. `terraform apply`コマンド
 apply=実行 
@@ -170,6 +187,8 @@ apply=実行
 * 同一のAWSリソースの作成が(VPCやSGなど)がマネジメントコンソール上で確認できるか
 * tfファイルに書かれたリソースの構築を実行。必ず実行確認が出るので、yesと入力。
 * 実行フォルダ内のtfファイルすべてが処理されるのを確認。
+
+<details><summary>実行して表示されるコードブロック</summary>
 
 ```
 $ terraform apply
@@ -215,12 +234,15 @@ aws_vpc.main_vpc: Creation complete after 14s [id=vpc-1234567890abcdefgh] ← vp
 
 Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 ```
+</details>
 
 #### 6. `terraform destroy`コマンド
 destroy=リソースを削除
 * 現場ではあまり使用されない。
 * 検証環境で、丸ごと消して良いパターンなどに限定する。
 * `destroy`コマンドで削除予定のリソースを`plan`で確認する方法はなく、`destroy`コマンドを実行した際、***必ず削除確認*** が出るので、削除実行予定のリソースを確認し、よければyesと入力。
+
+<details><summary>実行して表示されるコードブロック</summary>
 
 ```
 $ terraform destroy
@@ -268,13 +290,18 @@ aws_vpc.main_vpc: Destruction complete after 1s
 
 Destroy complete! Resources: 1 destroyed.
 ```
+</details>
+
 #### 7. `tfファイルの中身`を変更して、リソースを変更したり、`コメントアウト`してリソースを削除する  (この方法がリソースの変更・削除には最も一般的)
 
 VPCのリソースを変更する
 
 * `cidr_block = "10.0.0.0/16`から`"172.16.0.0/16"`に変更
 * タグ値を`"Name" = "tf-vpc"`から`"Name" = "AWS-vpc"`に変更
+
 変更前
+<details><summary>実行して表示されるコードブロック</summary>
+
 ```
 # ----------
 # リソース定義
@@ -290,8 +317,11 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 ```
+</details>
 
 変更後
+<details><summary>実行して表示されるコードブロック</summary>
+
 ```
 # ----------
 # リソース定義
@@ -307,8 +337,12 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 ```
+</details>
+
 
 `terraform plan` →`terraform apply`を実行
+
+<details><summary>実行して表示されるコードブロック</summary>
 
 ```
 $ terraform plan
@@ -348,8 +382,13 @@ Terraform will perform the following actions:
 
 Plan: 1 to add, 0 to change, 1 to destroy.
 ```
+</details>
+
 
 `terraform apply`コマンドを実行
+
+<details><summary>実行して表示されるコードブロック</summary>
+
 ```
 $ terraform plan
 aws_vpc.main_vpc: Refreshing state... [id=vpc-1234567890abcdefgh]
@@ -402,10 +441,14 @@ aws_vpc.main_vpc: Creation complete after 13s [id=vpc-abcdefgh1234567890]
 
 Apply complete! Resources: 1 added, 0 changed, 1 destroyed.
 ```
+</details>
 
 VPCのリソースを削除する
 
 変更前
+
+<details><summary>実行して表示されるコードブロック</summary>
+
 ```
 # ----------
 # リソース定義
@@ -421,8 +464,12 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 ```
+</details>
 
 `terraform plan` →`terraform apply`を実行
+
+<details><summary>実行して表示されるコードブロック</summary>
+
 ```
 terraform plan
 aws_vpc.main_vpc: Refreshing state... [id=vpc-08d214ecb3fb1b470]
@@ -462,7 +509,11 @@ Terraform will perform the following actions:
 
 Plan: 0 to add, 0 to change, 1 to destroy.
 ```
+</details>
+
 `terraform apply`コマンドを実行
+
+<details><summary>実行して表示されるコードブロック</summary>
 
 ```
 aws_vpc.main_vpc: Refreshing state... [id=vpc-abcdefgh1234567890]
@@ -513,13 +564,13 @@ aws_vpc.main_vpc: Destruction complete after 0s
 
 Apply complete! Resources: 0 added, 0 changed, 1 destroyed.
 ```
-コンソール上でも削除を確認。
-
-削除されたリソースを確認。
+</details>
 
 #### 8. `-target=`オプション 
-* 1. -target=resource "<リースの種類>" "<リソース名>"  
-* 2. -target=module "<モジュールの定義する種類>" "<リースの種類>" "<リソース名>" 
+* 1. resourceで作成したAWSリソース:
+  * -target=resource "<リースの種類>" "<リソース名>"  
+* 2. moduleで作成したAWSリソース:
+  * -target=module "<モジュールの定義する種類>" "<リースの種類>" "<リソース名>" 
 
 リソースを指定して削除する
 
@@ -528,6 +579,9 @@ Apply complete! Resources: 0 added, 0 changed, 1 destroyed.
 ```
 terraform destroy -target=resource.aws_vpc.main_vpc
 ```
+
+<details><summary>実行して表示されるコードブロック</summary>
+
 ```
 aws_vpc.main_vpc: Refreshing state... [id=vpc-abcdefgh1234567890]
 
@@ -594,7 +648,8 @@ aws_vpc.main_vpc: Destruction complete after 1s
 
 Destroy complete! Resources: 1 destroyed.
 ```
-コンソール上でも確認
+</details>
+
 ( `plan`,`apply`,`destroy`コマンドが対象)
 
 [参考サイト](https://tama-shira.github.io/note/terraform/terraform-01-basic/)
