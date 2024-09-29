@@ -242,6 +242,7 @@ destroy=リソースを削除
 * 検証環境で、丸ごと消して良いパターンなどに限定する。
 * `destroy`コマンドで削除予定のリソースを`plan`で確認する方法はなく、`destroy`コマンドを実行した際、***必ず削除確認*** が出るので、削除実行予定のリソースを確認し、よければyesと入力。
 
+
 <details><summary>実行して表示されるコードブロック</summary>
 
 ```
@@ -294,7 +295,7 @@ Destroy complete! Resources: 1 destroyed.
 
 #### 7. `tfファイルの中身`を変更して、リソースを変更したり、`コメントアウト`してリソースを削除する  (この方法がリソースの変更・削除には最も一般的)
 
-VPCのリソースを変更する
+--VPCのリソースを変更する--
 
 * `cidr_block = "10.0.0.0/16`から`"172.16.0.0/16"`に変更
 * タグ値を`"Name" = "tf-vpc"`から`"Name" = "AWS-vpc"`に変更
@@ -342,6 +343,7 @@ resource "aws_vpc" "main_vpc" {
 
 `terraform plan` →`terraform apply`を実行
 
+実行後の結果
 <details><summary>実行して表示されるコードブロック</summary>
 
 ```
@@ -654,17 +656,28 @@ Destroy complete! Resources: 1 destroyed.
 
 [参考サイト](https://tama-shira.github.io/note/terraform/terraform-01-basic/)
 
-
-
 #### 8. `tree`コマンド
+* ディレクトリ構成やファイル構成をツリー上にしてわかりやすくするコマンド
 
+<details><summary>今回のpushするディレクトリ・ファイルの構成</summary>
+
+```
+
+```
+</details>
+
+[参考サイト](https://atmarkit.itmedia.co.jp/ait/articles/1802/01/news025.html)
 ### `tf.state`ファイルの説明
 #### 1. 
 #### 2.`git.ignore`をインストールして、`tf.state`ファイル及び`backup`に記録されたセキュリティ情報(SSH接続するキーペアの情報・RDSのログインパスワードなど)が誤ってPublic リポジトリにPushされないようにする
 
+隠しディレクトリ.terraform下のリソースがPushされてしまいファイル容量制限を満たせずpushできない件
+
+
 ### 作成するリソースの説明
 ###  それぞれの記述方法
 #### 1. Terraformの変数なし
+[変数なしでの記述コードはこちらから](basic/basic-README.md)
 #### 2. Terraformの変数ありVar
 #### 3. Terraformのmodule変数で記述
 #### 4. module変数で特定のリソースを記述
