@@ -667,14 +667,43 @@ Destroy complete! Resources: 1 destroyed.
 </details>
 
 [参考サイト](https://atmarkit.itmedia.co.jp/ait/articles/1802/01/news025.html)
-### `tf.state`ファイルの説明
-#### 1. 
-#### 2.`git.ignore`をインストールして、`tf.state`ファイル及び`backup`に記録されたセキュリティ情報(SSH接続するキーペアの情報・RDSのログインパスワードなど)が誤ってPublic リポジトリにPushされないようにする
+#### `tf.state`ファイルの説明
+[こちらを参照](task/environment/tf-state.md) 
+#### `git.ignore`をインストール
+
+`tf.state`ファイル及び`backup`に記録されたセキュリティ情報(SSH接続するキーペアの情報・RDSのログインパスワードなど)が誤ってPublic リポジトリにPushされないようにする
 
 隠しディレクトリ.terraform下のリソースがPushされてしまいファイル容量制限を満たせずpushできない件
 
+`.gitignore`に`push`したくないリソースを記述しなければを隠しディレクトリ`.terraform`ディレクトリのリソースが`push`されようとし、`.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5`がファイル容量制限100MBをオーバーするということでエラーになった。
+<details><summary>今回の表示されたエラー</summary>
+
+```
+Username for 'https://github.com': <自分のユーザ名>
+Password for 'https://<自分のユーザ名>@github.com': 
+
+Enumerating objects: 82, done.
+Counting objects: 100% (82/82), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (62/62), done.
+Writing objects: 100% (80/80), 66.85 MiB | 2.20 MiB/s, done.
+
+File terraform-task/terraform-basic/.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5 is 245.06 MB; this exceeds GitHub's file size limit of 100.00 MBTotal 80 (delta 19), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (19/19), done.
+remote: error: Trace: 7cc6f00c96f373468b73c9f0ffff16157a6ba5d57b51596a29a5b1f96f193a3d
+remote: error: See https://gh.io/lfs for more information.
+remote: error: File terraform-task/terraform-basic/.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5 is 245.06 MB; this exceeds GitHub's file size limit of 100.00 MB
+remote: error: GH001: Large files detected. You may want to try Git Large File Storage - https://git-lfs.github.com.
+To https://github.com/tushiko23/terraform-AWS.git
+ ! [remote rejected] git-lecture -> git-lecture (pre-receive hook declined)
+error: failed to push some refs to 'https://github.com/<自分のユーザ名>/terraform-AWS.git'
+```
+</details>
+
+remote: error: File terraform-task/terraform-basic/.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5 is 245.06 MB; this exceeds GitHub's file size limit of 100.00 MB が表示されエラーになった。
 
 ### 作成するリソースの説明
+表添付予定
 ###  それぞれの記述方法
 #### 1. Terraformの変数なし
 [変数なしでの記述コードはこちらから](basic/basic-README.md)
