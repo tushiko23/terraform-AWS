@@ -1,5 +1,5 @@
 # terraform-AWS
-### Raisetech第5回課題にて作成したAWSリソースをterraformで作成
+## Raisetech第5回課題にて作成したAWSリソースをterraformで作成
 
 --------
 
@@ -668,12 +668,46 @@ Destroy complete! Resources: 1 destroyed.
 
 [参考サイト](https://atmarkit.itmedia.co.jp/ait/articles/1802/01/news025.html)
 #### `tf.state`ファイルの説明
+
+* 今回は、tf.stateの内容をリモートリポジトリのS3バケットに保存する運用をする
 [こちらを参照](task/environment/tf-state.md) 
+
 #### `git.ignore`をインストール
 
-`tf.state`ファイル及び`backup`に記録されたセキュリティ情報(SSH接続するキーペアの情報・RDSのログインパスワードなど)が誤ってPublic リポジトリにPushされないようにする
+`.gitignore`ファイルを作成し、`push`されたくないリソースを記述する。
 
+役割
+* `tf.state`ファイル及び`backup`に記録されたセキュリティ情報(SSH接続するキーペアの情報・RDSのログインパスワードなど)が誤ってPublic リポジトリにPushされないようにする
+* バージョン管理する必要ないリソースや、`push`するとファイルの制限容量が超えてしまうリソースを`push`されないようにする。
+
+
+```
+touch .gitignore
+vi    .gitignore
+```
+
+```
+.gitignoreファイルの記述
+
+#Ignore credential file for Terraform
+credential.auto.tfvars
+
+#Ignore Terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Ignore Terraform crash logs
+crash.log
+
+# Ignore .terraform directories
+.terraform/
+```
+
+* ベストプラクティスは、.gitignoreにあらかじめ`push`したくないリソースを記述する
+
+参考:
 隠しディレクトリ.terraform下のリソースがPushされてしまいファイル容量制限を満たせずpushできない件
+<details><summary>エラーの原因及び解決方法はこちら</summary>
 
 `.gitignore`に`push`したくないリソースを記述しなければを隠しディレクトリ`.terraform`ディレクトリのリソースが`push`されようとし、`.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5`がファイル容量制限100MBをオーバーするということでエラーになった。
 <details><summary>今回の表示されたエラー</summary>
@@ -694,13 +728,79 @@ remote: error: Trace: 7cc6f00c96f373468b73c9f0ffff16157a6ba5d57b51596a29a5b1f96f
 remote: error: See https://gh.io/lfs for more information.
 remote: error: File terraform-task/terraform-basic/.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5 is 245.06 MB; this exceeds GitHub's file size limit of 100.00 MB
 remote: error: GH001: Large files detected. You may want to try Git Large File Storage - https://git-lfs.github.com.
-To https://github.com/tushiko23/terraform-AWS.git
+To https://github.com/<自分のユーザ名>/terraform-AWS.git
  ! [remote rejected] git-lecture -> git-lecture (pre-receive hook declined)
 error: failed to push some refs to 'https://github.com/<自分のユーザ名>/terraform-AWS.git'
 ```
 </details>
 
-remote: error: File terraform-task/terraform-basic/.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5 is 245.06 MB; this exceeds GitHub's file size limit of 100.00 MB が表示されエラーになった。
+```
+remote: error: File terraform-task/terraform-basic/.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5 is 245.06 MB; this exceeds GitHub's file size limit of 100.00 MB 
+```
+が表示されエラーになった。
+
+```
+error: failed to push some refs to 'https://github.com/
+```
+このエラーの表記から何らかの原因でpushに失敗したのでは？と思い、
+`git git rm -r --cached .terraform/`を実施。
+
+エラーが解消されず。
+
+原因:
+GitHubのリモートリポジトリに大きなファイルがすでに存在している
+
+大きなファイルがすでにリモートに存在するので、`commmit`＆`push`した履歴が残っている。ファイルを完全削除するために`push`履歴から削除する必要がある。
+```
+git filter-branch --force --index-filter \
+  'git rm --cached --ignore-unmatch terraform-var-tushiko/.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5' \
+  --prune-empty --tag-name-filter cat -- --all
+```
+`.gitignore`ファイルを作成し、`push`されたくないリソースを記述する。
+
+
+```
+touch .gitignore
+vi    .gitignore
+```
+
+```
+.gitignoreファイルの記述
+
+#Ignore credential file for Terraform
+credential.auto.tfvars
+
+#Ignore Terraform state files
+*.tfstate
+*.tfstate.backup
+
+# Ignore Terraform crash logs
+crash.log
+
+# Ignore .terraform directories
+.terraform/
+```
+
+再度、`git push `をする
+```
+＃必要に応じて-forceコマンド
+git push -force
+```
+
+[参考サイト](https://zenn.dev/flyingbarbarian/articles/aaf59c07b71a34)
+
+* ベストプラクティスは、.gitignoreにあらかじめ`push`したくないリソースを記述する
+
+</details>
+
+#### .terraform.lock.hclの説明
+* `terraform init`コマンド実行時に、現在の作業ディレクトリに生成されるファイル。
+
+* `terraform.lock.hcl`には`terraform init`時に決定した、プロバイダー(AWSなどの外部システムとその指定バージョン)とモジュール(.tfファイルに記述したコード)の依存関係や互換性が記録。
+
+* そうすることで、terraform apply実行時に同じ決定を使用できるようになる。
+
+[参考サイト](https://rurukblog.com/post/terraform-lock-hcl/)
 
 ### 作成するリソースの説明
 表添付予定

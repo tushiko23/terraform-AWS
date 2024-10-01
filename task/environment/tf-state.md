@@ -16,17 +16,19 @@ terraformstateファイルとは
 * githubでの管理もできなくはないが、pull,pushを忘れるので自動化が一番有効。
 
 2つの方法がある
+
 1.AWSではS3バケットに格納するのがスタンダード
+
 2.DynamoDBを使って、排他ロック（先に操作した人が終わるまでapplyなどをブロックする）
 をかけるという方法。今回は割愛。
 https://www.terraform.io/docs/backends/types/s3.html#dynamodb-state-locking
 
 1の方法を使う
 
-*S3バケットを作成
-*今回は"tf-handson-tushiko"で作成
+* S3バケットを作成
+* 今回は"tf-handson-tushiko"で作成
 ```
-aws s3 mb s3://tf-handson-tushiko
+aws s3 mb s3://"バケット名"
 ```
 
 バージョニングを有効にする
