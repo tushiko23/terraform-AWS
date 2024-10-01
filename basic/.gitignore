@@ -1,4 +1,4 @@
- Ignore credential file for Terraform
+# Ignore credential file for Terraform
 credential.auto.tfvars
 
 # Ignore Terraform state files
@@ -10,8 +10,6 @@ crash.log
 
 # Ignore Terraform directories
 .terraform/
-terraform/
-*.terraform/
 
 # Ignore terraform.lock.hcl files 
 .terraform.lock.hcl
