@@ -662,7 +662,52 @@ Destroy complete! Resources: 1 destroyed.
 <details><summary>今回のpushするディレクトリ・ファイルの構成</summary>
 
 ```
-
+.
+├── basic
+│   ├── alb.tf
+│   ├── backend.tf
+│   ├── basic.md
+│   ├── ec2.tf
+│   ├── provider.tf
+│   ├── rds.tf
+│   ├── s3.tf
+│   ├── sg.tf
+│   └── vpc.tf
+├── modules
+│   ├── alb.tf
+│   ├── backend.tf
+│   ├── ec2.tf
+│   ├── iam.tf
+│   ├── modules.md
+│   ├── provider.tf
+│   ├── rds.tf
+│   ├── s3.tf
+│   ├── sg.tf
+│   ├── variables.tf
+│   └── vpc.tf
+├── README.md
+├── stage
+│   ├── main.tf
+│   ├── stage.md
+│   └── terraform.tfvars
+├── task
+│   ├── environment
+│   │   ├── tf-environment.md
+│   │   ├── tf-state.md
+│   │   └── tf-wzip-install.md
+│   └── images
+│       └── tf-1.png
+└── var
+    ├── alb.tf
+    ├── backend.tf
+    ├── ec2.tf
+    ├── provider.tf
+    ├── rds.tf
+    ├── s3.tf
+    ├── sg.tf
+    ├── variables.tf
+    ├── var.md
+    └── vpc.tf
 ```
 </details>
 
@@ -880,10 +925,13 @@ git push -force
 
 ###  それぞれの記述方法
 #### 1. Terraformの変数なし
-[変数なしでの記述コードはこちらから](basic/basic-README.md)
+[記述コードはこちらから](basic/basic.md)
 #### 2. Terraformの変数ありVar
+[記述コードはこちらから](var/var.md)
 #### 3. Terraformのmodule変数で記述
+[記述コードはこちらから](modules/modules.md)
 #### 4. module変数で特定のリソースを記述
+[記述コードはこちらから](stage/stage.md)
 #### 5. workspaceで記述
 
 
