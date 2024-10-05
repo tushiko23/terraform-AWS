@@ -16,7 +16,8 @@
      
 * [AWS CLIのインストール方法・認証情報の登録方法はこちら](https://github.com/tushiko23/CLI-AWS/blob/modify/cLI-command/cli-install.md)
 
-####  3. LocalPCにTerraformをインストール(今回は`tfenv`を使用してインストール)
+####  3. LocalPCにTerraformをインストール
+* 今回はバージョン管理が容易なことを考慮して、`tfenv`を使用してインストール
 * [`tfenv`でのインストール手順はこちら](task/environment/tf-environment.md)
 * [`wget`と`unzip`をインストールして、Terraformを使用する方法はこちら](task/environment/tf-wzip-install.md) 
 
@@ -34,7 +35,7 @@ AWSのリソースを作成できるように、Provider.tfにProviderを定義�
 TerraformのAWSにおけるProviderとは
 * TerraformがAWSのリソースを管理・操作できるようにするためのインターフェース。具体的には、プロバイダーはAWSのAPIとTerraformの間の橋渡し役を果たす。Terraformを使ってAWSのインフラをコードで定義し、リソースを作成、更新、削除することができる。
 
-<details><summary>実行して表示されるコードブロック</summary>
+<details><summary>provider.tfの記述</summary>
 
 ```
 # provider.tfに記述
@@ -63,11 +64,13 @@ provider "aws" {
 ```
 </details>
 
+補足
 
 * [Cloud9のAMTCについてはこちら](https://dev.classmethod.jp/articles/aws-cloud9-aws-managed-temporary-credentials/)
 * 使用するAWSプロバイダーのバージョンは3.0以降(つまり、3.×.×など)を指定。
 * 構築するAWSリソースは`ap-northeast-1`東京リージョンを使用するよう指定
 * 後ほど、SSH接続のためのキーペア作成に必要な`TLSプロバイダー`、SGの許可22ポートのマイIP取得に必要な`HTTPプロバイダー`、キーペアをLocalPCの指定ファイルに保存するために`Localプロバイダー`を設定します。リソース作成のタイミングで説明します。
+
 ### Terraformコマンドの説明
 
 #### 1. `terraform init`コマンド
@@ -144,7 +147,7 @@ $ terraform validate
 * リソースによっては、変更にあたってdestroyが必須なものもある。
 * planを使うことで、稼働中リソースに本当に影響がないかを確認できる。
 * planは完璧なわけではなく、依存関係の判断は不得意なので、場合によっては
-`apply`の失敗もある。(逆もある。`plan`では失敗するが、`apply`で成功する)
+`apply`の失敗もある。(逆もある。`plan`では失敗するが、`apply`で成功することもある)なので、注意深く`plan`コマンドを確認する必要がある。
 
 VPCを作成するコードを記述して`terraform plan`を実行する場合、以下が表示される。
 
@@ -297,11 +300,13 @@ Destroy complete! Resources: 1 destroyed.
 
 **VPCのリソースを変更する**
 
+[参考サイトはこちら](https://qiita.com/ortega1050/items/72b2b15b7f82ad1136ff)
+
 * `cidr_block = "10.0.0.0/16`から`"172.16.0.0/16"`に変更
 * タグ値を`"Name" = "tf-vpc"`から`"Name" = "AWS-vpc"`に変更
 
 変更前
-<details><summary>実行して表示されるコードブロック</summary>
+<details><summary>変更前のvpc.tfのコード</summary>
 
 ```
 # ----------
@@ -321,7 +326,7 @@ resource "aws_vpc" "main_vpc" {
 </details>
 
 変更後
-<details><summary>実行して表示されるコードブロック</summary>
+<details><summary>変更後のvpc.tfのコード</summary>
 
 ```
 # ----------
@@ -740,18 +745,23 @@ credential.auto.tfvars
 #Ignore Terraform state files
 *.tfstate
 *.tfstate.backup
+*.tfstate.*
 
 # Ignore Terraform crash logs
 crash.log
 
 # Ignore .terraform directories
 .terraform/
+**/.terraform/*
 ```
 
 * ベストプラクティスは、.gitignoreにあらかじめ`push`したくないリソースを記述する
 
 参考:
 隠しディレクトリ.terraform下のリソースがPushされてしまいファイル容量制限を満たせずpushできない件
+
+[こちらのサイトを参照](https://github.com/cnc4e/terraform-practice/tree/main/step2-basic#2-8-terraform%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6)
+
 <details><summary>エラーの原因及び解決方法はこちら</summary>
 
 `.gitignore`に`push`したくないリソースを記述しなければを隠しディレクトリ`.terraform`ディレクトリのリソースが`push`されようとし、`.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5`がファイル容量制限100MBをオーバーするということでエラーになった。
@@ -925,13 +935,13 @@ git push -force
 
 ###  それぞれの記述方法
 #### 1. Terraformの変数なし
-[記述コードはこちらから](basic/basic.md)
+[記述コードの説明はこちらから](basic/basic.md)
 #### 2. Terraformの変数ありVar
-[記述コードはこちらから](var/var.md)
+[記述コードの説明はこちらから](var/var.md)
 #### 3. Terraformのmodule変数で記述
-[記述コードはこちらから](modules/modules.md)
+[記述コードの説明はこちらから](modules/modules.md)
 #### 4. module変数で特定のリソースを記述
-[記述コードはこちらから](stage/stage.md)
+[記述コードの説明はこちらから](stage/stage.md)
 #### 5. workspaceで記述
 
 
