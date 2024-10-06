@@ -15,6 +15,3 @@ crash.log
 .terraform.lock.hcl
 *.terraform.lock.hcl
 
-# Ignore .gitignore files
-*.gitignore
-.gitignore/

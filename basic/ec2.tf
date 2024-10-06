@@ -82,8 +82,8 @@ resource "aws_iam_policy" "s3_test_policy" {
           "s3:GetBucketLocation"
         ]
         Resource = [
-          "arn:aws:s3:::terraform-tushiko-bucket",
-          "arn:aws:s3:::terraform-tushiko-bucket/*"
+          "arn:aws:s3:::<バケット名>",            # 自身が作成するS3バケット
+          "arn:aws:s3:::<バケット名>/*"           # 自身が作成するS3バケット
         ]
       }
     ]
@@ -200,7 +200,7 @@ resource "aws_instance" "main_ec2" {
   user_data                   = <<-EOF
               #!/bin/bash
               sudo yum update -y
-　　　　　　　sudo yum install -y mysql
+              sudo yum install -y mysql
               sudo amazon-linux-extras install -y nginx1.12
               sudo systemctl start nginx
               sudo systemctl enable nginx

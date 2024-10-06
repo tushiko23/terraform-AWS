@@ -25,6 +25,8 @@ resource "aws_s3_bucket_public_access_block" "tf_s3_bucket_public_access_block" 
 resource "aws_s3_account_public_access_block" "tf_s3_bucket_public_access_block" {
   block_public_acls   = false
   block_public_policy = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
 # ------------------------------

@@ -19,15 +19,6 @@ provider "aws" {
 
 provider "http" {}
 
-# This example fetches the TLS certificate chain
-# from `example.com` using an HTTP Proxy.
-
-provider "tls" {
-  proxy {
-    url = "https://corporate.proxy.service"
-  }
-}
-
 provider "local" {
   # Local providerの設定
 }
