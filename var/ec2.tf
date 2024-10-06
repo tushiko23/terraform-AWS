@@ -62,8 +62,8 @@ resource "aws_iam_policy" "s3_policy" {
           "s3:GetBucketLocation"
         ],
         Resource = [
-          "arn:aws:s3:::ydk-tf-bucket",
-          "arn:aws:s3:::ydk-tf-bucket/*"
+          "arn:aws:s3:::${var.s3_name}",
+          "arn:aws:s3:::${var.s3_name}/*"
         ]
       }
     ]
