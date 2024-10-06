@@ -19,7 +19,7 @@
 [作成したコードはこちら](../basic/provider.tf)
 <details><summary>provider.tfの記述の説明</summary>
 
-**aws provider**　
+**aws provider**
 
 * 今回使用するTerraformは`version1.9.5`(「1.×.×」以降のメジャーバージョン)なので、AWSプロバイダーバージョンもメジャーバージョンをサポートしている、3.0以降のバージョン(3.×.× 以降が対応する)に設定するように記述しました。
 
@@ -42,20 +42,25 @@
 * バケット内のバージョニングも有効に設定しています。
 </details>
 
+`terraform apply`で実行したときに実際に`terraform.tfstate`ファイルが保存されているか確認
+
+![](images/backup-1.png)
+![](images/backup-2.png)
+
 #### vpc.tf
 
 [作成したコードはこちら](../basic/vpc.tf)
 <details><summary>vpc.tfの記述の説明</summary>
 
 **VPC** 
-IPv4 CIDR　= `10.0.0.0/16` DNS ホスト名 = `有効` DNS 解決=`有効`  タグ値 `Name = tf-vpc`
+IPv4 CIDR = `10.0.0.0/16` DNS ホスト名 = `有効` DNS 解決=`有効`  タグ値 `Name = tf-vpc`
 
 **IGW**
-作成したvpcに`アタッチ`　タグ値 `name = tf-igw`
+作成したvpcに`アタッチ` タグ値 `name = tf-igw`
 
 **PublicSubnet**
 
-`ap-northeast-1a`に IPv4 CIDR = `10.0.0.0/20`　タグ名 `Name = tf-network-public-1a` で作成
+`ap-northeast-1a`に IPv4 CIDR = `10.0.0.0/20`　タグ値 `Name = tf-network-public-1a` で作成
 
 `ap-northeast-1c`に IPv4 CIDR = `10.0.16.0/20`　タグ値 `Name = tf-network-public-1c` で作成
 
@@ -98,6 +103,16 @@ IPv4 CIDR　= `10.0.0.0/16` DNS ホスト名 = `有効` DNS 解決=`有効`  タ
 [基本的なネットワークをterraformで作成する](https://zenn.dev/ochi_shoichi/scraps/1e224c1501cc29)
 [TerraformでAWS VPCを構築してみる](https://www.ios-net.co.jp/blog/20230405-910/)
 [Terraformで構築するAWS](https://y-ohgi.com/introduction-terraform/handson/vpc/)
+
+</details>
+
+<details><summary>実際に作成されたのを確認</summary>
+
+![](images/vpc-1.png)
+![](images/vpc-2.png)
+![](images/vpc-3.png)
+![](images/vpc-4.png)
+![](images/vpc-5.png)
 
 </details>
 
@@ -155,6 +170,22 @@ IPv4 CIDR　= `10.0.0.0/16` DNS ホスト名 = `有効` DNS 解決=`有効`  タ
 * タグ値 `Name = tf-elb-sg`　で作成
 </details>
 
+<details><summary>実際に作成されたのを確認</summary>
+
+***EC2用セキュリティグループ***
+![](images/sg-ec2-in.png)
+![](images/sg-ec2-out.png)
+
+***RDS用セキュリティグループ***
+![](images/sg-rds-in.png)
+![](images/sg-rds-out.png)
+
+***ALB用セキュリティグループ***
+![](images/sg-elb-in.png)
+![](images/sg-elb-out.png)
+
+</details>
+
 #### ec2.tf
 
 [作成したコードはこちら](../basic/ec2.tf)
@@ -199,7 +230,7 @@ IPv4 CIDR　= `10.0.0.0/16` DNS ホスト名 = `有効` DNS 解決=`有効`  タ
 * インスタンスタイプ`t2.micro`
 * AZは`ap-northeast-1`東京リージョンを選択
 * EC2のSGは作成したSGにする
-* パブリックIPの自動割当てはONにする
+* パブリックIPの自動割当てはONにする。VPC上の設定で、DNSホスト名を有効にする設定 `enable_dns_hostnames = true`を記述しなければ生成されないので、`vpc.tf`の記述でこれも確認する。
 * サブネットは作成した`PublicSubnet`の`north-east-1a`に配置
 * SSH接続に使用するキーペアはTerraformで作成したキーペアを選択
 * インスタンスプロファイルでEC2にIAMロールをアタッチ
@@ -219,6 +250,40 @@ IPv4 CIDR　= `10.0.0.0/16` DNS ホスト名 = `有効` DNS 解決=`有効`  タ
 * タグ値 `name = tf-ec2-eip`
 
 [ElasticIPの作成とインスタンスにアタッチ](https://itport.cloud/?p=19915#2-2)
+
+</details>
+
+<details><summary>実際に作成されたのを確認</summary>
+
+***AWS上にキーペア作成を確認***
+![](images/keypair-1.png)
+
+***Localファイルに.pemファイルでキーペアの保存を確認***
+![](images/keypair-2.png)
+
+***IAMPolicy S3アクセス用***
+![](images/iam-policy-s3.png)
+
+***IAMPolicy SSM用***
+![](images/iam-policy-ssm.png)
+
+***IAMRole EC2用***
+![](images/iam-role-1.png)
+
+***IAMRoleに作成したIAMPolicy2つがアタッチされているか確認***
+![](images/iam-role-2.png)
+
+***EC2の作成を確認***
+
+* キーペアが作成したもの`ec2-keypair.pem`であるか
+* IAMRoleが作成したもの`test_role`がアタッチされているか
+* SGが作成したもの`web-sg`が与えられているか
+* パブリックIPv4 DNSが与えられているか
+* ElasticIPがアタッチされているか
+
+![](images/ec2-1.png)
+![](images/ec2-2.png)
+![](images/ec2-3.png)
 
 </details>
 
@@ -250,13 +315,23 @@ IPv4 CIDR　= `10.0.0.0/16` DNS ホスト名 = `有効` DNS 解決=`有効`  タ
 |vpc_security_group_ids| [aws_security_group.rds.id]|RDS用に関連付けるSGIDを設定。|
 |db_subnet_group_name|aws_db_subnet_group.main.name|配置するDBインスタンス用サブネットグループを設定。|
 |availability_zone| ap-northeast-1a|Single-AZ構成にするときのみ設定できる。今回は、東京リージョンのap-northeast-１aに設定。|
-|multi_az |false|multi-AZにするかの設定。falseの場合は、single-AZ構成。tureの場合、multi-az構成にする。|
+|multi_az |false|multi-AZにするかの設定。falseの場合は、single-AZ構成。trueの場合、multi-az構成にする。|
 
 * 必要に応じて、その他のオプション設定をしてください。
 
 [こちらを参照](https://github.com/tushiko23/CLI-AWS/blob/modify/cLI-command/cli-command-RDS.md)
 
 [サブネットグループ&RDSを作成](https://cloud5.jp/terraform-rds/)
+
+</details>
+
+<details><summary>実際に作成されたのを確認</summary>
+
+***サブネットグループ***
+![](images/rds-subnetgroup.png)
+
+***RDSの作成確認***
+！[](images/rds.png)
 
 </details>
 
@@ -299,7 +374,7 @@ target_group_arn | aws_alb_target_group.test_target_group.arn|	作成したタ�
 
 |設定項目|設定値|解説・備考|
 | ---- | ---- | ---- | 
-|name  | test-alb-tf|	ALBの名前を設定。ここでは、test-albb-tfを設定。|
+|name  | test-alb-tf|	ALBの名前を設定。ここでは、test-alb-tfを設定。|
 |internal |	false |	外部に公開するアプリケーションを想定しているため。|
 |load_balancer_type |	application |	ロードバランサの種類はALBを指定。|
 |security_groups | aws_security_group.elb.id|	ALB用に作成したSGを指定。必ず記述するときは、[]をつけること。 |
@@ -320,6 +395,19 @@ target_group_arn | aws_alb_target_group.test_target_group.arn|	作成したタ�
 
 </details>
 
+<details><summary>実際に作成されたのを確認</summary>
+
+***ターゲットグループ(インスタンスの登録も確認)***
+![](images/targetgroup-1.png)
+![](images/targetgroup-2.png)
+
+***ALBのリスナールールとセキュリティグループの関連付け***
+![](images/alb-1.png)
+![](images/alb-2.png)
+![](images/alb-3.png)
+
+</details>
+
 #### s3.tf  
 [作成したコードはこちら](../basic/s3.tf)
 <details><summary>s3.tfの記述の説明</summary>
@@ -327,7 +415,7 @@ target_group_arn | aws_alb_target_group.test_target_group.arn|	作成したタ�
 * バケット作成。タグ値`name = test-s3-bucket`
 * `aws_s3_bucket_public_access_block`パプリックアクセスを****バケット単位**** でブロックする設定。
 * `aws_s3_account_public_access_block`パブリックアクセスを****アカウント単位****でブロックにする設定。
-* オンにする場合は`ture`をオフにする場合は`false`を選択する。
+* オンにする場合は`true`をオフにする場合は`false`を選択する。
 
 `block_public_acls`
 「新しいアクセスコントロールリスト (ACL) を介して付与されたバケットとオブジェクトへのパブリックアクセスをブロックする」
@@ -341,7 +429,7 @@ target_group_arn | aws_alb_target_group.test_target_group.arn|	作成したタ�
 `restrict_public_buckets`
 「任意のパブリックバケットポリシーまたはアクセスポイントポリシーを介したバケットとオブジェクトへのパブリックアクセスとクロスアカウントアクセスをブロックする」
 
-コードの設定では、アカウントレベルではパブリックアクセスを許可し、バケット単位で制限している設定を行っている。
+コードの設定では、アカウントレベルではパブリックアクセスを許可し、バケットパブリックアクセスをブロックしている設定を行っている。
 なお、コードの表記がない場合はデフォルトでパプリックアクセスをオフになっている。
 
 [S3のバケットのブロックパブリックアクセスを設定](https://zenn.dev/hige/articles/01b69444ccaa3d)
@@ -356,4 +444,53 @@ target_group_arn | aws_alb_target_group.test_target_group.arn|	作成したタ�
 
 </details>
 
-## 実際に`terraform apply`を実行し、コード通りにAWSリソースが作られているかを確認。
+<details><summary>実際に作成されたのを確認</summary>
+
+***S3バケット作成＆バージョニング有効設定がオンになっているか確認***
+![](images/s3-1.png)
+
+***S3のバケットのブロックパブリックアクセス設定がオンになっているか確認***
+![](images/s3-2.png)
+
+***S3のバケットのブロックパブリックアクセス設定がオフになっているか確認***
+![](images/s3-3.png)
+
+</details>
+
+
+## 動作確認
+
+### `terraform apply`で実行して、リソースの生成が正常に終了したことを確認
+
+![](images/apply-1.png)
+
+### EC2にキーペア使用でSSH接続し、RDSに接続
+![](images/check-1.png)
+
+### EC2にSSM使用でSSH接続し、RDSに接続
+![](images/check-2.png)
+![](images/check-3.png)
+
+### RDSの初期パスワードを変更する
+
+```
+ALTER USER '<RDSで設定したマスタユーザ名>'@'%' IDENTIFIED BY '設定したいパスワード';
+#今回はユーザ名 admin パスワードはnew_passwordに変更
+#成功すると以下が返ってくる
+Query OK, 0 rows affected (0.00 sec)
+```
+![](images/check-4.png)
+
+### ターゲットグループのヘルスチェック
+Nginxの動作を確認
+
+![](images/check-5.png)
+![](images/targetgroup-1.png)
+
+### `terraform destroy`コマンドにてリソースの削除を確認
+![](images/destroy-1.png)
+
+### 感想
+* 苦労した点は、SSM用のIAMポリシーがIAMロールにアタッチされ、EC2にアタッチされたにもかかわらず、SSMの接続ボタンが作動せず接続できなかったところです。原因はおそらく、IAMポリシーでSSMで接続する必要な権限が不足していて接続できなかったのかと思われます。参考サイトをしっかり見て、IAMポリシーを作成したら、接続ができました。
+* EC2のキーペアも思い通りにローカルPCに保存されず、SSH接続ができないという事例もありました。AWSキーペアの作成の工程はもう少し簡単にできそうなので、模索してみます。
+* .gitignoreファイルを作成し、pushしてバージョン管理すべきリソースの区別することは、大切だと思いました。git pushで隠しディレクトリ・ファイルがpushされることまで配慮して必要ないリソースはpushされないように確認していきたいです。
