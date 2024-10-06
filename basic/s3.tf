@@ -11,7 +11,7 @@ resource "aws_s3_bucket" "tf_s3_bucket" {
 }
 
 # ------------------------------
-# パブリックアクセスをブロックする設定
+# バケット単位でパブリックアクセスをブロックする設定
 # ------------------------------
 
 resource "aws_s3_bucket_public_access_block" "tf_s3_bucket_public_access_block" {
@@ -21,6 +21,10 @@ resource "aws_s3_bucket_public_access_block" "tf_s3_bucket_public_access_block" 
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+# ------------------------------
+# アカウント単位でパブリックアクセスはオフにする設定
+# ------------------------------
 
 resource "aws_s3_account_public_access_block" "tf_s3_bucket_public_access_block" {
   block_public_acls   = false
@@ -39,4 +43,3 @@ resource "aws_s3_bucket_versioning" "tf_s3_bucket_version" {
     status = "Enabled" # バージョニングを有効にする
   }
 }
-
