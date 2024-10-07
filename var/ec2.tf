@@ -16,7 +16,7 @@ resource "aws_key_pair" "main" {
 # localPCに保存
 
 resource "local_file" "keypair_private" {
-  filename        = "/home/youren-tushiko-0223/ec2-connect-key.pem" # ローカルPCに保存するパス
+  filename        = "/home/youren-tushiko-0223/${var.keypair_name}.pem" # ローカルPCに保存するパス
   content         = tls_private_key.main.private_key_pem            # PEM形式の秘密鍵で保存
   file_permission = "0400"                                          # 秘密鍵のファイルパーミッション
 }
