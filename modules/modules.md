@@ -1,0 +1,106 @@
+# moduleブロックを使用して、第5回課題のAWSリソースを構築する
+
+[こちらのサイト](https://github.com/cnc4e/terraform-practice/blob/main/step5-module/README.md)を参考にしました
+
+**作成する構成図**
+
+![](../task/images/tf-1.png)
+
+## 親モジュールをリソースとして子モジュールで参照する
+
+### 1. ディレクトリごとにTerraform実行環境を分け、親モジュールに作成したいAWSリソースを記述する方法
+
+#### 下準備
+Terraform実行環境に`chapter6`ディレクトリを作成し、`chapter6`ディレクトリ下に親モジュール用に`modules`、子モジュール用に`prod`ディレクトリを作成する
+
+```
+# 実行環境用ディレクトリを作成
+
+mkdir chapter6
+cd $_
+
+# 実行環境ディレクトリ下(今回は"chapter6")に親モジュール用、子モジュール用ディレクトリを作成
+
+mkdir modules prod
+```
+
+**ディレクトリ構成**
+
+```
+# ディレクトリ"modules"
+# (ここでは親モジュールにあたります)
+
+├── modules
+│   ├── provider.tf
+│   ├── backend.tf
+│   ├── variables.tf
+│   ├── vpc.tf
+│   ├── sg.tf
+│   ├── iam.tf
+│   ├── ec2.tf
+│   ├── rds.tf
+│   ├── alb.tf
+│   └── s3.tf
+
+# ディレクトリ"prod"
+# (親モジュールにあたる"modulesブロック"で参照する)
+
+├── prod
+│   └── main.tf
+```
+
+**[変数ありvar](../var/var.md)との記述の違いと変更点**
+
+* 親モジュールでは基本的なコードの書き方は変数ありの場合の記述と変わりません。
+* 前回は、[ec2.tf](../var/ec2.tf)にEC2にアタッチするIAMポリシー、IAMロールを記述していましたが、今回は、別に[iam.tf](./file-1/iam.tf)を作成し、EC2にアタッチするIAMポリシー、IAMロールを記述します。
+
+* 任意の変数値を作成する[terraform.tfvars](../var/terraform.tfvars)を作成せず、子モジュールの[main.tf]()に作成したいリソースの変数値(例えば、VPCのCIDRブロックなど)を記述します。
+* なお、子モジュールで変数値を指定しなかった(main.tfに変数値を記述しなかったという意味)の場合、親モジュールに指定しているdefaultの変数値を定義しているファイル[valiables.tf](./file-1/variables.tf)を参照して作成されるものとします。
+
+<details><summary>親モジュール"modules"で記述したコードはこちらから</summary>
+
+#### provider.tf
+
+[作成したコードはこちら](./file-1/provider.tf)
+
+#### backend.tf
+
+[作成したコードはこちら](./file-1/backend.tf)
+
+#### variables.tf
+
+[作成したコードはこちら](./file-1/variables.tf)
+
+#### vpc.tf
+
+[作成したコードはこちら](./file-1/vpc.tf)
+
+#### sg.tf
+
+[作成したコードはこちら](./file-1/sg.tf)
+
+#### iam.tf
+
+[作成したコードはこちら](./file-1/iam.tf)
+
+#### ec2.tf
+
+[作成したコードはこちら](./file-1/ec2.tf)
+
+#### rds.tf
+
+[作成したコードはこちら](./file-1/rds.tf)
+
+#### alb.tf
+
+[作成したコードはこちら](./file-1/alb.tf)
+
+#### s3.tf
+
+[作成したコードはこちら](./file-1/s3.tf)
+
+</details>
+
+### `foreach`,`三項演算子`を使用し、親モジュールから作成したいリソースのみを絞って作成する方法
+
+## 親モジュールをリソースとして、`foreach`を使用して、AWSリソースを複数作成する
