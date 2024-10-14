@@ -99,8 +99,33 @@ mkdir modules prod
 
 [作成したコードはこちら](./file-1/s3.tf)
 
+#### main.tf
+
 </details>
 
-### `foreach`,`三項演算子`を使用し、親モジュールから作成したいリソースのみを絞って作成する方法
+**子モジュールにて、親モジュールをリソースとしてAWSリソースを作成**
+
+***コードの説明***
+```
+# main.tf内
+# moduleの利用
+# moduleブロックと"任意のプロジェクト名を指定"
+
+module "任意のプロジェクト名を指定" {
+  # moduleの位置
+  source = "../modules"
+
+  # 指定したい変数値の設定(変数ありの”terraform.tfvars"にあたる)
+  # VPCのCIDRを指定
+  my_cidr_block = "10.0.0.0/16"
+  name_base        = "modules-practice"
+}
+```
+
+**子モジュール`modules`で記述したコード**
+
+#### main.tf
+
+## `foreach`,`三項演算子`を使用し、親モジュールから作成したいリソースのみを絞って作成する方法
 
 ## 親モジュールをリソースとして、`foreach`を使用して、AWSリソースを複数作成する
