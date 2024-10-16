@@ -110,21 +110,43 @@ mkdir modules prod
 # main.tf内
 # moduleの利用
 # moduleブロックと"任意のプロジェクト名を指定"
+# 基本的なmoduleの書き方
+module "リソースの名前" {
+    source = "モジュールを定義したフォルダのパス"
+    パラメーター名 = "パラメーター値"
+}
 
 module "任意のプロジェクト名を指定" {
   # moduleの位置
   source = "../modules"
 
-  # 指定したい変数値の設定(変数ありの”terraform.tfvars"にあたる)
-  # VPCのCIDRを指定
-  my_cidr_block = "10.0.0.0/16"
-  name_base        = "modules-practice"
+  # 指定したいパラメーター値の設定(変数ありの”terraform.tfvars"にあたる)
+  # デフォルト値でよいものは記述しないでOK
+  # Networkのパラメーター値を指定
+  
+  # Networkリソースのみ変数の値を設定
+  # 1. VPCのCIDRブロック
+  # 2. プロジェクト単位で分析できるようにするためのタグ値
+  # 3. ap-northeast-1aのPublicSubnetのCIDRブロック
+  # 4. ap-northeast-1cのPublicSubnetのCIDRブロック
+  # 5. ap-northeast-1aのPrivateSubnetのCIDRブロック
+  # 6. ap-northeast-1cのPublicSubnetのCIDRブロック
+
+  my_vpc_cidr_block = "172.1.0.0/16"
+  name_base         = "paractice-modules"
+  my_pubsub_1a_cidr = "172.1.0.0/20"
+  my_pubsub_1c_cidr = "172.1.16.0/20"
+  my_prisub_1a_cidr = "172.1.128.0/20"
+  my_prisub_1c_cidr = "172.1.144.0/20"
+
 }
 ```
 
 **子モジュール`modules`で記述したコード**
 
 #### main.tf
+
+[記述したコードはこちら]()
 
 ## `foreach`,`三項演算子`を使用し、親モジュールから作成したいリソースのみを絞って作成する方法
 
