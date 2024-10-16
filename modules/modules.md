@@ -11,7 +11,7 @@
 ### 1. ディレクトリごとにTerraform実行環境を分け、親モジュールに作成したいAWSリソースを記述する方法
 
 #### 下準備
-Terraform実行環境に`chapter6`ディレクトリを作成し、`chapter6`ディレクトリ下に親モジュール用に`modules`、子モジュール用に`prod`ディレクトリを作成する
+Terraform実行環境に`chapter6`ディレクトリを作成し、`chapter6`ディレクトリ下に親モジュール用に`file-1`、子モジュール用に`file-2`ディレクトリを作成する
 
 ```
 # 実行環境用ディレクトリを作成
@@ -30,7 +30,7 @@ mkdir modules prod
 # ディレクトリ"modules"
 # (ここでは親モジュールにあたります)
 
-├── modules
+├── file-1
 │   ├── provider.tf
 │   ├── backend.tf
 │   ├── variables.tf
@@ -45,7 +45,7 @@ mkdir modules prod
 # ディレクトリ"prod"
 # (親モジュールにあたる"modulesブロック"で参照する)
 
-├── prod
+├── file-2
 │   └── main.tf
 ```
 
@@ -142,11 +142,11 @@ module "任意のプロジェクト名を指定" {
 }
 ```
 
-**子モジュール`modules`で記述したコード**
+**子モジュール`file-2`ディレクトリ下の`main.tf`で記述したコード**
 
 #### main.tf
 
-[記述したコードはこちら]()
+[記述したコードはこちら](./file-2/main.tf)
 
 ## `foreach`,`三項演算子`を使用し、親モジュールから作成したいリソースのみを絞って作成する方法
 
