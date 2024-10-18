@@ -1,22 +1,35 @@
 terraform {
   required_providers {
-    http = {
-      source  = "hashicorp/http"
-      version = "~> 3.0"
-    }
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 5.0" # バージョンの指定は最新のものに設定
     }
-  }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.0" 
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.1" 
+    }
 }
+}
+
+# 以前の記述の仕方はコメントアウト
+# provider "http" {
+  # HTTP providerの設定  
+# }
+
+# provider "local" {
+  # Local providerの設定
+# }
 
 # backend
 terraform {
   backend "s3" {
-    bucket = "modules-ydk-tf-bucket"
-    key    = "chapter-6/prod/terraform.tfstate"
-    region = "ap-northeast-1"
+    bucket = "modules-ydk-tf-bucket" # バケット名を記述
+    key    = "chapter-6/prod/terraform.tfstate" # 記録するterraform.tfstateのパス
+    region = "ap-northeast-1" # リージョンを記述 
   }
 }
 
