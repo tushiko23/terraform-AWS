@@ -1,6 +1,6 @@
 # moduleブロックを使用して、第5回課題のAWSリソースを構築する
 
-[こちらのサイト](https://github.com/cnc4e/terraform-practice/blob/main/step5-module/README.md)を参考にしました
+* [こちらのサイト](https://github.com/cnc4e/terraform-practice/blob/main/step5-module/README.md)を参考にして記述しました
 
 **作成する構成図**
 
@@ -11,7 +11,7 @@
 ### 1. ディレクトリごとにTerraform実行環境を分け、親モジュールに作成したいAWSリソースを記述する方法
 
 #### 下準備
-Terraform実行環境に`chapter6`ディレクトリを作成し、`chapter6`ディレクトリ下に親モジュール用に`file-1`、子モジュール用に`file-2`ディレクトリを作成する
+Terraform実行環境に`chapter-6`ディレクトリを作成し、`chapter6`ディレクトリ下に親モジュール用に`directory-1`、子モジュール用に`directory-2`ディレクトリを作成する
 
 ```
 # 実行環境用ディレクトリを作成
@@ -19,18 +19,18 @@ Terraform実行環境に`chapter6`ディレクトリを作成し、`chapter6`デ
 mkdir chapter6
 cd $_
 
-# 実行環境ディレクトリ下(今回は"chapter6")に親モジュール用、子モジュール用ディレクトリを作成
+# 実行環境ディレクトリ下(今回は"chapter-6")に親モジュール用、子モジュール用ディレクトリを作成
 
-mkdir modules prod
+mkdir directory-1 directory-2
 ```
 
 **ディレクトリ構成**
 
 ```
-# ディレクトリ"modules"
+# ディレクトリ"directory-1"
 # (ここでは親モジュールにあたります)
 
-├── file-1
+├── directory-1
 │   ├── provider.tf
 │   ├── backend.tf
 │   ├── variables.tf
@@ -42,10 +42,10 @@ mkdir modules prod
 │   ├── alb.tf
 │   └── s3.tf
 
-# ディレクトリ"prod"
+# ディレクトリ"directory-2"
 # (親モジュールにあたる"modulesブロック"で参照する)
 
-├── file-2
+├── directory-2
 │   └── main.tf
 ```
 
@@ -57,7 +57,12 @@ mkdir modules prod
 * 任意の変数値を作成する[terraform.tfvars](../var/terraform.tfvars)を作成せず、子モジュールの[main.tf]()に作成したいリソースの変数値(例えば、VPCのCIDRブロックなど)を記述します。
 * なお、子モジュールで変数値を指定しなかった(main.tfに変数値を記述しなかったという意味)の場合、親モジュールに指定しているdefaultの変数値を定義しているファイル[valiables.tf](./file-1/variables.tf)を参照して作成されるものとします。
 
-<details><summary>親モジュール"modules"で記述したコードはこちらから</summary>
+<details><summary>親モジュール"directory-1"で記述したコードはこちらから</summary>
+
+子モジュールでコード実行中にwarningが生じましたので、親モジュールの
+`provider.tf`と子モジュールの`main.tf`のprovider記述内容を変更しました。
+
+[詳細はこちらから](../task/environment/provider-modify.md)
 
 #### provider.tf
 
@@ -117,8 +122,8 @@ module "リソースの名前" {
 }
 
 module "任意のプロジェクト名を指定" {
-  # moduleの位置
-  source = "../modules"
+  # モジュールを定義したフォルダのパㇲ
+  source = "../directory-1"
 
   # 指定したいパラメーター値の設定(変数ありの”terraform.tfvars"にあたる)
   # デフォルト値でよいものは記述しないでOK
@@ -142,7 +147,7 @@ module "任意のプロジェクト名を指定" {
 }
 ```
 
-**子モジュール`file-2`ディレクトリ下の`main.tf`で記述したコード**
+**子モジュール`directory-2`ディレクトリ下の`main.tf`で記述したコード**
 
 #### main.tf
 
