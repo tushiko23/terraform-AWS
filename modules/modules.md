@@ -56,13 +56,11 @@ mkdir directory-1 directory-2
 
 * 任意の変数値を作成する[terraform.tfvars](../var/terraform.tfvars)を作成せず、子モジュールの[main.tf]()に作成したいリソースの変数値(例えば、VPCのCIDRブロックなど)を記述します。
 * なお、子モジュールで変数値を指定しなかった(main.tfに変数値を記述しなかったという意味)の場合、親モジュールに指定しているdefaultの変数値を定義しているファイル[valiables.tf](./file-1/variables.tf)を参照して作成されるものとします。
-
-<details><summary>親モジュール"directory-1"で記述したコードはこちらから</summary>
-
-子モジュールでコード実行中にwarningが生じましたので、親モジュールの
-`provider.tf`と子モジュールの`main.tf`のprovider記述内容を変更しました。
+* 子モジュールでコード実行中にHTTPプロバイダとLocalプロバイダの記述に関してwarningが生じましたので、親モジュールの`provider.tf`と子モジュールの`main.tf`のprovider記述内容を変更しました。
 
 [詳細はこちらから](../task/environment/provider-modify.md)
+
+<details><summary>親モジュール"directory-1"で記述したコードはこちらから</summary>
 
 #### provider.tf
 
