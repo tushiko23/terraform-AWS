@@ -48,7 +48,7 @@ terraform {
 
 # 以前の記述の仕方はコメントアウト
 # provider "http" {
-  # Local providerの設定  
+  # HTTP providerの設定  
 # }
 
 # provider "local" {
